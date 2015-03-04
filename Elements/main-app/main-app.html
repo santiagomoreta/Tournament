@@ -1,0 +1,459 @@
+<link rel="import" href="../lib/flatiron-director/flatiron-director.html">
+<polymer-element name="main-app">
+	<template>
+    <flatiron-director route="{{route}}" autoHash></flatiron-director>
+		<style>
+			@font-face {
+	    	  font-family: Bronx;
+	      	  src: url(./fonts/Bronx/Bronx.ttf);
+	     	}
+			core-drawer-panel{
+	
+			}
+		
+			my-head /deep/ #title{
+				font-size: 60px;
+				font-family: serif;
+				color: #F76700;	
+				font-weight: bold;
+				text-shadow: 0 5px 0 rgba(0,0,0,.5);		
+				
+			}
+
+			#drawer{
+				position: absolute;
+				background-color: whitesmoke;
+				border-radius: 7px;
+				height: 100%;
+				z-index: 10;
+			}
+			
+			#mn{
+				position: fixed;
+			}
+			core-header-panel /deep/ core-toolbar{
+     		 
+		        background: url(https://a-v2.sndcdn.com/assets/images/header/header-bg-d50908.png);
+		        background-size: 100% 100%;
+		       	height:auto;
+		      
+       
+		      
+		     }
+          /*----------- media query mobile ----------*/
+    @media (max-width: 610px) {
+      	my-head /deep/ #title{
+				font-size: 48px;
+
+				
+			}
+      #userLog{
+        visibility:hidden;
+      }
+
+    }
+
+   
+
+		</style>
+
+
+	<core-drawer-panel id="cdp"responsiveWidth="2000px" >
+	
+	<div drawer id="drawer" >
+	<mobile-menu id="momenu"  pages="{{pages}}" user="{{user}}" photo="{{photo}}"></mobile-menu>
+
+	</div>
+	   
+
+	
+
+<core-header-panel  main  mode="waterfall">
+<core-toolbar>
+  <my-head id="mh" lang="en" mtitle="Fastbook"></my-head>
+  	<!--<core-icon-button id="cib"  src="http://tediselmedical.com/wp-content/uploads/2013/11/Spain.png"icon="menu" on-tap=" {{languaje}} " id="languaje" > </core-icon-button> -->
+    <core-icon-button hidden on-tap="{{ tapxploit}}" src="http://lh3.googleusercontent.com/-OrI1DUdm480/T7y_kOxudFI/AAAAAAAAEgE/rp20hOY3H7c/s800/google-plus-share-button-screenshot.png"></core-icon-button>
+    <user-log id="userLog" user="{{user}}" photo="{{photo}}"  flex></user-log>
+ </core-toolbar> 
+  <my-banner id="mb" lang="en"></my-banner>
+
+	<div id="container">
+
+
+		<core-animated-pages id="cap" valueattr="hash" selected="{{route}}"
+					transitions="slide-from-right">
+			
+			<section  hash="home">
+					<core-animation id="ca"></core-animation>
+          
+
+			</section >
+			<section  hash="search">
+					<!--<core-search></core-search>-->
+              <result-search id="result"></result-search>
+			</section >
+
+			<section  hash="buy">
+					
+					<mi-biblioteca id="mibiblioteca"></mi-biblioteca>
+			</section>
+			<section  hash="sell">
+					
+					<sell-element id="se" ></sell-element>
+			</section>
+			<section  hash="account">
+        
+					<fast-account id="fa"></fast-account>
+          				
+			</section>
+			<section  hash="about">	     
+        			<about-us></about-us>
+
+        	</section>
+
+			<section  hash="profile">	
+        		<core-perfil id="cp" user="{{user}}" photo="{{photo}}"hidden></core-perfil>
+        	</section>	
+			<section id="detailbook">	
+       			 <book-detail id="bdetail" book="{{book}}" miroute="{{route}}"></book-detail>
+			</section>
+			<section id="updatebook" hash="update">	
+       			 <book-update id="bupdate" book="{{book}}" ></book-update>
+			</section>
+
+
+		</core-animated-pages>
+
+	</div>
+    <paper-toast id="toast" class="capsule" text="Book Added¡¡¡" style="padding-right: 60px;">
+      <p id="t">titulo</p>
+      <p id="a">author</p>
+    </paper-toast>
+
+
+  </core-header-panel>
+
+</core-drawer-panel>
+</template>
+  <script src="/socket.io/socket.io.js"></script>
+
+	<script>
+
+
+
+//--------------------------escuchando eventos------------------------
+
+	Polymer({
+
+		ready:function() {
+			 var that=this;
+       var then=this;
+      
+      
+   //-------------------------socket io--------------------------------
+          this.socket=io();
+         
+                    this.socket.on('chat message', function(msg){
+                    console.log(msg+"     okok");
+                    
+                    var toast=that.$.toast;
+                    console.log(toast);
+                    var tit=that.$.t;
+                    var aut=that.$.a;
+                    $(tit).text("Title: "+msg.title);
+                    $(aut).text("Author: "+msg.author);
+               
+                    toast.show();
+                    that.$.mibiblioteca.ready();
+                    that.$.ca.ready();
+          
+                    
+                  });
+ 
+
+//-------------------------------escuchando usuarios locales conectados----------------
+
+	$.get('/profile', function(data,success,error){
+	if(data.user){
+			console.log(data.user)		
+      	window.localStorage.setItem('token',data.token);
+			that.$.userLog.hidden=false;	
+      that.$.cp.hidden=false;
+			that.$.ca.login();
+			that.user=data.user;
+      
+			//console.log(data.user.local)
+	
+      that.$.cp.loadbooks();
+
+			if(data.user.twitter){
+				that.user=data.user.twitter;      
+        //pendiente la foto///
+        
+			}
+			if(data.user.facebook){
+				that.user=data.user.facebook;
+        that.photo="http://graph.facebook.com/"+that.user.id+"/picture?type=normal";
+ 
+			}
+			if(data.user.google){
+ 
+						that.user=data.user.google;
+		        var url='https://picasaweb.google.com/data/entry/api/user/'+that.user.id+'?alt=json'
+		        $.get(url,function(data){
+		          //console.log(data.entry.gphoto$thumbnail.$t);
+		          then.photo=data.entry.gphoto$thumbnail.$t;
+		          
+		        })
+			}
+			if(data.user.local){
+				that.user=data.user.local;
+				var url="/upload/"+data.user._id;
+				$.get(url, function(data,error){
+					if(data!=="not found"){
+					then.photo="uploads/"+data;
+				}
+					
+
+				});
+
+			}
+
+	}	
+	else{
+		that.$.ca.logout();
+		that.$.userLog.hidden=true;	
+    that.$.cp.hidden=true;
+    if(location.hash==="#profile"){
+      that.route="home";
+    }
+     
+    
+		}
+	})
+
+
+	//--------------------------------------------------------------
+
+			this.pages=this.$.mh.pages;
+			this.$.mh.lang="en";
+			this.$.mb.lang="en";
+	
+      this.$.detailbook.hash=this.route;
+      
+ //-------------------------------event reload when delete book-----------------------------
+  this.$.bupdate.addEventListener('reload',function(){
+    that.$.cp.reloadBooks();
+  });
+ 
+ 
+    
+//-------------------escuchando evento closedialog de bookdetail-----------------------
+		this.$.bdetail.addEventListener('closedialog', function(e) {
+          that.route="home";
+		  	});
+
+//-------------------escuchando evento bookdetail en slider-----------------------
+			this.$.ca.addEventListener('bookdetail', function(e) {
+        that.book=e.detail;
+        that.$.detailbook.hash="bookdetail"+that.book._id;
+           that.route="bookdetail"+that.book._id;
+        
+          
+		  	})
+		  	
+//---------------------------------escuchando bookdetail en main search----------------------
+
+		this.$.mb.addEventListener('bookDetail', function(e) {
+           that.route="search";
+           console.log(e.detail);
+           that.$.result.mainSearch(e.detail);
+        
+          
+		  	})
+//-----------------------------escuchando bookdetail en mi library-----------------------
+
+			this.$.mibiblioteca.addEventListener('bookdetailLibrary', function(e) {
+        that.book=e.detail;
+        that.$.detailbook.hash="bookdetail"+that.book._id;
+           that.route="bookdetail"+that.book._id;
+        
+          
+		  	})
+ //--------------escuchando book detail en result search---------------------------
+ 
+    		this.$.result.addEventListener('bookdetailSearch', function(e) {
+        that.book=e.detail;
+        console.log(e.detail);
+        that.$.detailbook.hash="bookdetail"+that.book._id;
+           that.route="bookdetail"+that.book._id;
+        
+          
+		  	})
+    
+    
+//---------------------------escuchando book detail en biblio-user----------------
+			this.$.cp.addEventListener('bookdetail', function(e) {
+        that.book=e.detail;
+        that.$.updatebook;
+     
+        that.route="update";
+          
+		  	})
+//---------------------escuchando a userlog-*----------------------
+			this.$.userLog.addEventListener('profile', function() {
+		    	that.route="profile";
+		  	});
+
+
+		//-------------------escuchando evento boton menu left-----------------------
+			this.$.mh.addEventListener('actionMenu', function() {
+		    	that.$.cdp.togglePanel();
+		  	});
+
+		  	//-------------------- escuchando mobile menu profile ---------------------
+		  	this.$.momenu.addEventListener('profile', function() {
+		    	that.route="profile";
+          	that.$.cdp.closeDrawer();
+		  	});
+
+		  	//-------------------- escuchando mobile menu to account ---------------------
+		  	this.$.momenu.addEventListener('account', function() {
+		    	that.route="account";
+		    	that.$.fa.loadlogin();
+          	that.$.cdp.closeDrawer();
+		  	});
+        //--------------------------  escuchando mobile menu to logout-------------------------
+		  	this.$.momenu.addEventListener('logout', function() {
+		    	that.$.userLog.Logout();
+          
+		  	});
+		  	//-------------------escuchando evento menu principal-----------------------
+			this.$.mh.addEventListener('mainMenu', function(e) {
+		    	that.$.ca.ready();
+		    	that.route=e.detail;
+
+		    	
+		  	});
+		  	//-------------------escuchando evento menu left-----------------------
+			this.$.momenu.addEventListener('leftMenu', function(e) {
+		    	
+		    	that.route=e.detail;
+		    	that.$.cdp.closeDrawer();
+		    	
+		  	});
+		  	//-------------------escuchando evento slected-book-----------------------
+			this.$.ca.addEventListener('selectedBook', function(e) {
+		    	
+		    	console.log(e.detail.alt+"           soy evento ");
+		    	
+		    	
+		  	});	
+      //--------------------------escuchando evento load profile-----------------------
+      this.$.fa.addEventListener('profile-load',function(e){
+        console.log(e.detail.name+"  soy profile en main");
+        that.user=e.detail;
+      });
+    
+
+    //----------------------------escuchando login/register social-login-------------
+  
+         	    this.$.ca.addEventListener('social-login',function(e){
+		       	console.log(e.detail+"---------socila");
+
+		      });
+  
+
+
+    //----------------------------escuchando login/register-------------
+    	    this.$.ca.addEventListener('user-logged',function(e){
+		      	
+
+		  
+		       var user=JSON.parse(e.detail.response);
+		            console.log(user);
+		            that.$.userLog.hidden=false;
+		        that.user=user.local;
+		        that.$.ca.login();
+		        location.reload();
+
+		      });
+    	       this.$.ca.addEventListener('user-reg',function(e){
+		      	
+
+		  
+		       //var user=JSON.parse(e.detail.response);
+		            user=e.detail;
+		           that.$.userLog.hidden=false;
+		        that.user=user.local;
+		        that.$.ca.login();
+		         location.reload();
+
+		      });
+	//------------------------escuchando evento login movil--------------------
+		    this.$.fa.addEventListener('user-logged',function(e){
+		      	
+
+		  
+		       var user=JSON.parse(e.detail.response);
+		            console.log(user);
+		            that.$.userLog.hidden=false;
+		        that.user=user.local;
+		        that.$.ca.login();
+		        that.route="home";
+		        location.reload();
+
+		      });
+    	       this.$.fa.addEventListener('user-reg',function(e){
+		      	
+
+		  
+		       //var user=JSON.parse(e.detail.response);
+		            user=e.detail;
+		           that.$.userLog.hidden=false;
+		        that.user=user.local;
+		        that.$.ca.login();
+		          that.route="home";
+		         location.reload()
+
+		      });
+          
+          
+          
+          
+          
+      
+		},
+     tapxploit:function(){
+      
+      window.open("/xploit.html","width=200, height=100","toolbar=no").scrollTo(0, 1);
+
+          
+   
+      
+    },
+		languaje: function  (a,b,c) {
+
+			if(this.$.mh.lang=="en"){
+				this.$.mh.lang="es";
+				this.$.mb.lang="es";
+				this.$.mh.ready();
+				this.$.momenu.pages=this.$.mh.pages;
+				this.$.cib.src="http://tediselmedical.com/wp-content/uploads/2013/11/United_Kingdom.png";
+			}else if(this.$.mh.lang=="es"){
+				this.$.mb.lang="en";
+				this.$.mh.lang="en";
+				this.$.mh.ready();
+				this.$.momenu.pages=this.$.mh.pages;
+				this.$.cib.src="http://tediselmedical.com/wp-content/uploads/2013/11/Spain.png";
+			}
+		
+			this.$.mb.languaje(this.$.mh.lang);
+		}
+    
+
+
+
+	});
+	</script>
+</polymer-element>

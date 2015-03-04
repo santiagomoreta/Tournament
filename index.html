@@ -1,0 +1,381 @@
+<html>
+
+	<head>	
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		 <script src="bower_components/webcomponentsjs/webcomponents-lite.js">
+		 </script>
+		<link rel="import" href="bower_components/polymer/polymer.html">
+		 <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+	<link href='http://fonts.googleapis.com/css?family=Nosifer' rel='stylesheet' type='text/css'>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+
+<!--ya no es necesario el platform-->
+	<!--importando elemntos-->
+
+		<link rel="import" href="bower_components/core-toolbar/core-toolbar.html">
+		<link rel="import" href="bower_components/core-menu/core-menu.html">
+		<link rel="import" href="bower_components/core-collapse/core-collapse.html">
+		<link rel="import" href="bower_components/paper-button/paper-button.html">
+		<link rel="import" href="bower_components/paper-item/paper-item.html">
+		<link rel="import" href="bower_components/paper-tabs/paper-tab.html">
+		<link rel="import" href="bower_components/paper-tabs/paper-tabs.html">
+		<link rel="import" href="bower_components/core-item/core-item.html">
+		<link rel="import" href="bower_components/paper-input/paper-input-decorator.html">
+		<link rel="import" href="bower_components/paper-input/paper-input.html">
+		<link rel="import" href="bower_components/paper-button/paper-button.html">		
+		<link rel="import" href="bower_components/paper-item/paper-item.html">
+		<link rel="import" href="bower_components/paper-dialog/paper-action-dialog.html">
+		<link rel="import" href="bower_components/paper-ripple/paper-ripple.html">
+		<link rel="import" href="bower_components/paper-slider/paper-slider.html">
+		<link rel="import" href="bower_components/core-icons/core-icons.html">
+		<link rel="import" href="bower_components/core-icons/av-icons.html">
+		<link rel="import" href="bower_components/core-pages/core-pages.html">
+		<link rel="import" href="bower_components/core-scaffold/core-scaffold.html">
+		<link rel="import" href="bower_components/core-drawer-panel/core-drawer-panel.html">
+		<link rel="import" href="bower_components/core-animated-pages/core-animated-pages.html"> 
+ 	    <link rel="import" href="bower_components/core-animated-pages/transitions/slide-from-right.html"> 
+
+
+		
+
+		<style type="text/css">
+
+
+	
+		  html{
+        	margin-left: 15%;
+        	margin-right: 15%;
+        	margin-top:1%;
+           -webkit-text-size-adjust: 100%;
+		    -ms-text-size-adjust: 100%;
+      	}
+		@font-face {
+		    font-family: Metropolis;
+		    src: url(font/METROPOLIS/Metropolis.otf);
+		}
+		@font-face {
+		    font-family: Circus;
+		    src: url(font/FHABGTORNC.ttf);
+		}		
+
+		   a {color:#1155CC;}
+        ul li {padding: 0px 0;}
+
+     	#inicio{
+        	background-image: url('img/home.jpg');
+        	background-size: 100% 100%;
+        	height: 100%;
+	        width: 100%;
+	        position: relative;
+	        background-position: center;
+	        -webkit-background-size: cover;
+	        -moz-background-size: cover;
+	        -o-background-size: cover;
+	        background-size: cover;
+       
+        }
+      	#torneo{
+        	background-image: url('img/torneo.jpg');
+        	background-size: 100% 100%;
+        	height: 100%;
+	        width: 100%;
+	        position: relative;
+	        background-position: center;
+	        -webkit-background-size: cover;
+	        -moz-background-size: cover;
+	        -o-background-size: cover;
+	        background-size: cover;
+       
+        }
+      	#otros{
+        	background-image: url('img/otros.jpg');
+        	background-size: 100% 100%;
+        	height: 100%;
+	        width: 100%;
+	        position: relative;
+	        background-position: center;
+	        -webkit-background-size: cover;
+	        -moz-background-size: cover;
+	        -o-background-size: cover;
+	        background-size: cover;
+       
+        }
+        #collapse{
+        	border-radius: 7px;
+        	margin-top:2%;
+        	border:2px solid rgba(18, 21, 223, 0.3);;
+        	width: 50%;
+       //background-color: rgba(18, 133, 223, 0.1);
+       background-color: white;
+       padding: 1%;
+        }
+                #collapse2{
+        	border-radius: 7px;
+        	margin-top:2%;
+        	border:2px solid rgba(18, 21, 223, 0.3);;
+        	width: 50%;
+       //background-color: rgba(18, 133, 223, 0.1);
+       background-color: white;
+       padding: 1%;
+        }
+       
+
+		#menu{
+			
+			color:white;
+			height: 50px;
+			//margin-left: 100px;
+
+		}
+		#title{
+			font-family: Nosifer;
+			font-size: 40px;
+		}
+		#gallery{
+			border: solid 5px green;
+			height: auto;
+		}
+		core-scaffold /deep/ core-icon-button{
+			visibility: hidden;
+		}
+		core-scaffold /deep/ core-toolbar{
+			background-color: black;
+		}
+		#tool{
+			visibility: visible;
+
+			
+
+		}
+		#menutool{
+			background-color: #170F55;
+		}
+		paper-input{
+			background-color:white;
+		}
+		#nuevo{
+			margin-top:5%;
+			background-color: black;
+			color:white;
+		}
+		.butt{
+			background-color: black;
+			color:white;
+		}
+
+
+		@media only screen and (max-width: 610px) {
+			 #collapse{
+    
+        	width: 100%;
+        	}
+        	 #collapse2{
+    
+        	width: 100%;
+        	}
+
+			#tool{
+				visibility: hidden;
+			}
+			#title{
+			
+			font-size: 27px;
+			}
+			core-scaffold /deep/ core-icon-button{
+			visibility: visible;
+			}
+			#mijines{
+				visibility: visible;
+			}
+			#ninja-slider{
+				height: 22%;
+			}
+		}
+
+		
+
+		</style>
+
+
+	</head>
+		
+
+
+
+
+
+	<body>
+
+		<template is="auto-binding">
+
+<core-scaffold responsiveWidth="2000px" drawerWidth="50%" >
+  <core-header-panel navigation flex mode="watefall" style="background-color:white">
+    <core-toolbar id="menutool"><div style="color:white">Menu</div></core-toolbar>
+   <!-- <core-menu theme="core-light-theme">-->
+		<core-menu vertical layout valueattr="hash" selected="{{route}}"flex >
+			<template repeat="{{page in pages}}">
+				<core-item flex label="{{page.name}}" hash="{{page.hash}}" icon="{{page.icon}}" onclick="closeDrawer()">
+					<a href="#{{page.hash}}"></a>
+				</core-item>
+			</template>	
+	</core-menu>
+
+  </core-header-panel>
+  <div tool horizontal layout center flex id="tool">
+  <div id="mijines"style="width:50%; margin-top:0%"> <div id="title"><a href="index.html" style="text-decoration:none; color:white">Torneo.<span style="color:red">fifa</span></a></div></div>
+  				<core-toolbar id="menu" horizontal layout  >
+				<core-menu style="width:800px" horizontal layout valueattr="hash" selected="{{route}}"flex >
+						<template repeat="{{page in pages}}">
+							<core-item flex center-justified label="{{page.name}}" hash="{{page.hash}}"icon="{{page.icon}}" >
+								<a href="#{{page.hash}}"></a>
+							</core-item>
+						</template>	
+				</core-menu>
+			</core-toolbar>
+  </div>
+
+
+
+		
+	
+		
+
+
+
+
+			<div id="container">
+
+
+				<core-animated-pages valueattr="hash" selected="{{route}}"
+					transitions="slide-from-right" id="animated">
+
+					<section hash="home" id="inicio">
+						<center>
+							<paper-button on-tap="{{toggle}}" id="nuevo" raised><core-icon icon="add"></core-icon>Crea un Nuevo Torneo</paper-button>
+							<core-collapse id="collapse" style="margin-left:2%">
+							<paper-input label="Nombre del torneo" id="nameT"></paper-input>
+							<label># Jugadores</label>
+          					<paper-slider id="slider" value="2" max="20" editable="" role="slider" tabindex="0" aria-valuemin="2" aria-valuemax="20" aria-valuenow="2"></paper-slider>
+							<paper-button on-tap="{{toggle2}}" class="butt">Continuar</paper-button>
+							</core-collapse>
+
+							<core-collapse id="collapse2" style="margin-left:2%">
+							<div vertical layout>
+
+								<template repeat="{{player in players}}">
+									<paper-input id="player.id"label="{{player.name}}" ></paper-input>
+								</template>
+							</div>
+          					
+							<paper-button  on-tap="{{validplayers}}" class="butt">Continuar</paper-button>
+							</core-collapse>
+							<paper-action-dialog id="dialog" backdrop autoCloseDisabled layered="false">
+
+								<h2>El Torneo {{torneo}} </h2>
+								<p>Se realizara con los siguientes participantes</p>
+								<div vertical layout>
+									<template repeat="{{player in players}}">
+										<label>{{player.name}}</label>
+									</template>
+								</div>
+								<paper-button on-tap="{{cancel}}" class="butt">CANCEL</paper-button>
+								<paper-button on-tap="{{Tready}}" class="butt">OK</paper-button>
+
+							</paper-action-dialog>
+
+
+						</center>
+					</section>
+
+					<section  hash="torneo" id="torneo">
+								diseño
+					</section >
+
+					<section  hash="otros" id="otros">
+							
+							webbb
+					</section>
+					<section  hash="servicio">
+							
+						servicio
+					</section>
+					<section  hash="contacto">
+						contacto
+						
+					</section>
+
+			
+
+
+				</core-animated-pages>
+				
+
+
+			</div>
+	
+			</core-scaffold>
+		</template>	
+		
+
+	</body>
+
+</html>
+<script>
+	
+    var template = document.querySelector('template[is="auto-binding"]');
+
+     template.pages=[
+     {name : "Inicio",hash : "home" , icon : "home"},
+     {name : "Torneos",hash : "torneo" , icon : "create"},
+     {name : "Otros",hash : "otros" , icon : "apps"},
+        ];
+    template.toggle=function(){
+    	this.$.collapse.toggle();
+
+    }
+    template.toggle2=function(){
+    	this.$.collapse2.toggle();
+    	this.players=[];
+
+	    var numPlayers=this.$.slider.immediateValue;
+	    for(var i=1;i<=numPlayers;i++){
+	    	this.players.push({name:"player"+i,id:i});
+	    }
+	
+
+    }
+     template.validplayers=function(){
+     	this.players=[];
+     	this.torneo=this.$.nameT.value;
+     	var pp=document.getElementsByTagName('paper-input');
+
+     	var numPlayers=this.$.slider.immediateValue;
+     	   for(var i=1;i<=numPlayers;i++){
+	    	this.players.push({name:pp[i].value,id:i});
+	   		}
+	   	
+	   		this.$.dialog.toggle();
+	    console.log(this.players)
+    	
+    }
+    template.cancel=function(){
+    	this.$.dialog.toggle();
+    }
+     template.Tready=function(){
+     	
+     	this.$.animated.selected="torneo";
+     	this.routes="torneo";
+    	this.$.dialog.toggle();
+    	
+    }
+       // document.location.hash='home';
+
+   		
+       function closeDrawer(){
+       		var x=	document.querySelector("core-scaffold");
+      	
+      		x.closeDrawer();
+       }
+
+</script>
